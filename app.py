@@ -8,12 +8,24 @@ import numpy as np
 from eval import generate_song_notes, EMOTION_LABEL_TO_NUMBER
 from scipy.io import wavfile
 from amc_dl.format_convert import get_midi_from_notes
+import torch
+from curricula import music_curriculum
 
 st.write(
     """
     Generating songs with emotions
     """
 )
+
+@st.cache
+def get_model():
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+    model = music_curriculum(device)
+
+    model.load_model("model/emusebert_final.pt", device)
+
+    return model
 
 def emuseBERT_generation():
     st.title(":musical_note: Generate emotional music using eMuseBERT")
@@ -23,9 +35,10 @@ def emuseBERT_generation():
 
     if st.button("Generate"):
         with st.spinner("Generating in progress. This might take several minutes."):
+            model = get_model()
             emotion_number = EMOTION_LABEL_TO_NUMBER[selected_emotion]
 
-            midi_notes = generate_song_notes(emotion_number, num_steps, num_corrupt_steps)
+            midi_notes = generate_song_notes(model, emotion_number, num_steps, num_corrupt_steps)
             music = get_midi_from_notes(midi_notes)
             audio_data = music.fluidsynth()
             audio_data = np.int16(

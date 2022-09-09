@@ -16,14 +16,10 @@ EMOTION_LABEL_TO_NUMBER = {
     "Q4": 4
 }
 
-def generate_song_notes(emotion: int = 1, number_of_steps: int = 1000, number_of_corrupt_steps: int = 200, target_length: int = 100):
+def generate_song_notes(model, emotion: int = 1, number_of_steps: int = 1000, number_of_corrupt_steps: int = 200, target_length: int = 100):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     corrupter = SimpleCorrupter(**music_corrupter_dict)
     autoenc = NoteAttributeAutoEncoder(**default_autoenc_dict)
-
-    _, model = music_curriculum(device)
-
-    model.load_model("model/emusebert_final.pt", device)
 
     data_in = np.zeros([1, target_length, 4])
     data_in[0, :, 0] = emotion
