@@ -1,0 +1,9 @@
+beautifulsoup4
+pretty-midi
+pyfluidsynth
+scipy
+streamlit
+numpy==1.21.6
+pretty_midi==0.2.9
+tensorboardX==2.5.1
+torch==1.6.0
