@@ -27,7 +27,6 @@ def emuseBERT_generation():
 
             midi_notes = generate_song_notes(emotion_number, num_steps, num_corrupt_steps)
             music = get_midi_from_notes(midi_notes)
-            music.write('Q{}.mid'.format(emotion_number))
             audio_data = music.fluidsynth()
             audio_data = np.int16(
                 audio_data / np.max(np.abs(audio_data)) * 32767 * 0.9
