@@ -17,21 +17,23 @@ st.write(
     """
 )
 
-@st.cache
+
+@st.cache(allow_output_mutation=True)
 def get_model():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    model = music_curriculum(device)
+    _, model = music_curriculum(device, False)
 
     model.load_model("model/emusebert_final.pt", device)
 
     return model
 
+
 def emuseBERT_generation():
     st.title(":musical_note: Generate emotional music using eMuseBERT")
     selected_emotion = st.selectbox("What emotion do you expect?", ("Q1", "Q2", "Q3", "Q4"))
-    num_steps = st.slider("Number of Markov Chain steps", 0, 10000, 4000, 50)
-    num_corrupt_steps = st.slider("Number of Markov Chain corruption steps", 0, num_steps, int(num_steps/4), 50)
+    num_steps = st.slider("Number of Markov Chain steps", 100, 10000, 4000, 50)
+    num_corrupt_steps = st.slider("Number of Markov Chain corruption steps", 25, num_steps, int(num_steps/4), 10)
 
     if st.button("Generate"):
         with st.spinner("Generating in progress. This might take several minutes."):

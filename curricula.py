@@ -83,9 +83,12 @@ class Curriculum:
     def lr(self):
         return self.train_dict['lr_dict']
 
-    def __call__(self, device):
+    def __call__(self, device, load_data_loaders=True):
+        data_loaders = None
+        if load_data_loaders:
+            data_loaders = self.prepare_emotional_data()
         model = self.prepare_model(device)
-        return model
+        return data_loaders, model
 
 
 # curriculum for used for generation
